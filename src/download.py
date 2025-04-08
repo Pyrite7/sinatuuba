@@ -1,17 +1,17 @@
 from yt_dlp import YoutubeDL
+import config
 
 
 
-
-def get_download_options(music_path: str) -> dict:
+def get_download_options() -> dict:
     return {
         'format': 'm4a/bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'm4a',
         }],
-        'paths': {'home': music_path},
-        'download_archive': music_path + '/downloaded.txt'
+        'paths': {'home': config.MUSIC_PATH},
+        'download_archive': config.YTDLP_ARCHIVE,
     }
 
 
@@ -21,8 +21,8 @@ def create_download_url(video_id: str) -> str:
 
 
 
-def download_song(video_id: str, music_path: str) -> int:
-    with YoutubeDL(get_download_options(music_path)) as ydl:
+def download_song(video_id: str) -> int:
+    with YoutubeDL(get_download_options()) as ydl:
         exit_code = ydl.download(create_download_url(video_id))
         return exit_code
 

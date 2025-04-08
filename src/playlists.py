@@ -1,17 +1,16 @@
 import os
+import config
 
 
-
-PLAYLIST_FILE_EXTENSION = '.playlist'
 
 
 
 def format_filename(playlist_name: str) -> str:
-    return playlist_name + PLAYLIST_FILE_EXTENSION
+    return playlist_name + config.PLAYLIST_FILE_EXTENSION
 
 
 def format_full_path(playlist_name: str, playlist_path: str) -> str:
-    return os.path.join(playlist_path, playlist_name + PLAYLIST_FILE_EXTENSION)
+    return os.path.join(playlist_path, playlist_name + config.PLAYLIST_FILE_EXTENSION)
 
 
 def get_all_playlist_files(playlist_path: str) -> list:
@@ -20,7 +19,7 @@ def get_all_playlist_files(playlist_path: str) -> list:
 
 def get_all_playlists(playlist_path: str) -> list:
     files = [file for file in os.listdir(playlist_path) if os.path.isfile(os.path.join(playlist_path, file))]
-    return list(map(lambda filename: filename.removesuffix(PLAYLIST_FILE_EXTENSION), files))
+    return list(map(lambda filename: filename.removesuffix(config.PLAYLIST_FILE_EXTENSION), files))
 
 
 def playlist_exists(name: str, playlist_path: str) -> bool:

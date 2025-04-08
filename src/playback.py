@@ -1,21 +1,21 @@
 import vlc
 import time
 from pathlib import Path
+import config
 
 
-
-def get_file_from_video_id(video_id: str, music_path: str) -> str:
-    for file in Path(music_path).rglob(f"*{video_id}*"):
+def get_file_from_video_id(video_id: str) -> str:
+    for file in Path(config.MUSIC_PATH).rglob(f"*{video_id}*"):
         return str(file)
     return None
 
 
-def download_and_play(video_id: str, music_path: str) -> vlc.MediaPlayer:
-    if get_file_from_video_id(video_id, music_path) == None:
+def download_and_play(video_id: str) -> vlc.MediaPlayer:
+    if get_file_from_video_id(video_id) == None:
         import download
-        download.download_song(video_id, music_path)
+        download.download_song(video_id)
     
-    return play(get_file_from_video_id(video_id, music_path))
+    return play(get_file_from_video_id(video_id))
 
 
 def play(file: str) -> vlc.MediaPlayer:
