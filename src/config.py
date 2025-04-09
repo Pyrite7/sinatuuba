@@ -28,10 +28,7 @@ def get_script_path(script_name: str) -> str:
 
 MUSIC_PATH = os.path.join(FILE_PATH, "Music")
 YTDLP_ARCHIVE = os.path.join(FILE_PATH, "downloaded.txt")
-
-def get_playlist_path(playlist_name: str) -> str:
-    return os.path.join(FILE_PATH, "Playlists", playlist_name + PLAYLIST_FILE_EXTENSION)
-
+PLAYLIST_DIRECTORY = os.path.join(FILE_PATH, "Playlists")
 
 def get_fifo_path(fifo_name: str) -> str:
     return os.path.join(FILE_PATH, "Ipc", fifo_name)

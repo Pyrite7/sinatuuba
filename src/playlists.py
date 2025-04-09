@@ -4,26 +4,25 @@ import config
 
 
 
-
 def format_filename(playlist_name: str) -> str:
     return playlist_name + config.PLAYLIST_FILE_EXTENSION
 
 
-def format_full_path(playlist_name: str, playlist_path: str) -> str:
-    return os.path.join(playlist_path, playlist_name + config.PLAYLIST_FILE_EXTENSION)
+def get_playlist_path(playlist_name: str) -> str:
+    return os.path.join(config.FILE_PATH, "Playlists", format_filename(playlist_name))
 
 
-def get_all_playlist_files(playlist_path: str) -> list:
-    return [file for file in os.listdir(playlist_path) if os.path.isfile(os.path.join(playlist_path, file))]
+def get_all_playlist_files() -> list:
+    return [file for file in os.listdir(config.PLAYLIST_DIRECTORY) if os.path.isfile(os.path.join(config.PLAYLIST_DIRECTORY, file))]
 
 
-def get_all_playlists(playlist_path: str) -> list:
-    files = [file for file in os.listdir(playlist_path) if os.path.isfile(os.path.join(playlist_path, file))]
+def get_all_playlists() -> list:
+    files = get_all_playlist_files()
     return list(map(lambda filename: filename.removesuffix(config.PLAYLIST_FILE_EXTENSION), files))
 
 
-def playlist_exists(name: str, playlist_path: str) -> bool:
-    return name in get_all_playlists(playlist_path)
+def playlist_exists(name: str) -> bool:
+    return name in get_all_playlists()
 
 
 
@@ -32,10 +31,10 @@ def playlist_exists(name: str, playlist_path: str) -> bool:
 
 
 
-def load_playlist(name: str, playlist_path: str) -> list:
-    full_path = format_full_path(name, playlist_path)
+def load_playlist(name: str) -> list:
+    full_path = get_playlist_path(name)
     
-    if playlist_exists(name, playlist_path):
+    if playlist_exists(name):
         with open(full_path, 'r') as file:
             raw = file.readlines()
             filtered = filter(lambda line: line != '\n', raw)
@@ -44,44 +43,58 @@ def load_playlist(name: str, playlist_path: str) -> list:
     return None
 
 
-def unsafe_write_playlist(contents: list, name: str, playlist_path: str):
+def unsafe_write_playlist(contents: list, name: str):
     """
     DO NOT USE DIRECTLY !!!!!!
     Writes a list of videoIDs to the playlist file of a given name.
     If the file doesn't exist, create it, OTHERWISE OVERWRITE THE CONTENTS OF THE PLAYLIST!!!!
     """
-    full_path = format_full_path(name, playlist_path)
+    full_path = get_playlist_path(name)
 
     with open(full_path, 'w') as file:
         for video_id in contents:
             file.write(video_id + '\n')
 
 
-def add_to_playlist(video_id: str, playlist_name: str, playlist_path: str):
-    if playlist_exists(playlist_name, playlist_path):
-        contents = load_playlist(playlist_name, playlist_path)
+def add_to_playlist(video_id: str, playlist_name: str):
+    if playlist_exists(playlist_name):
+        contents = load_playlist(playlist_name)
         contents.append(video_id)
-        unsafe_write_playlist(contents, playlist_name, playlist_path)
+        unsafe_write_playlist(contents, playlist_name)
 
 
-def remove_from_playlist(video_id: str, playlist_name: str, playlist_path: str):
-    if playlist_exists(playlist_name, playlist_path):
-        contents = load_playlist(playlist_name, playlist_path)
+def remove_from_playlist(video_id: str, playlist_name: str):
+    if playlist_exists(playlist_name):
+        contents = load_playlist(playlist_name)
         contents.remove(video_id)
-        unsafe_write_playlist(contents, playlist_name, playlist_path)
+        unsafe_write_playlist(contents, playlist_name)
 
 
 
 
 
-def create_playlist(name: str, playlist_path: str):
-    open(format_full_path(name, playlist_path), 'w')
+def create_playlist(name: str):
+    open(get_playlist_path(name), 'w')
 
 
-def delete_playlist(name: str, playlist_path: str):
+def delete_playlist(name: str):
     """NOTE: only works if the playlist is empty!!!"""
-    contents_or_none = load_playlist(name, playlist_path)
+    contents_or_none = load_playlist(name)
     if contents_or_none == []:
-        os.remove(format_full_path(name, playlist_path))
+        os.remove(get_playlist_path(name))
 
 
+
+def get_favourite_playlist() -> str:
+    with open(os.path.join(config.FILE_PATH, "favourite.txt"), "r") as file:
+        return file.readline().strip()
+
+def set_favourite_playlist(name: str):
+    with open(os.path.join(config.FILE_PATH, "favourite.txt"), "w") as file:
+        file.write(name)
+
+def add_to_favourite_playlist(video_id: str):
+    add_to_playlist(video_id, get_favourite_playlist())
+
+def remove_from_favourite_playlist(video_id: str):
+    remove_from_playlist(video_id, get_favourite_playlist())
