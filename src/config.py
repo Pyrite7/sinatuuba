@@ -23,7 +23,7 @@ CODE_PATH = os.getenv("CODE_PATH")
 PYTHON3_PATH = os.path.join(CODE_PATH, "venv/bin/python3")
 
 def get_script_path(script_name: str) -> str:
-    return os.path.join(CODE_PATH, "src", script_name)
+    return os.path.join(CODE_PATH, "src", script_name + ".py")
 
 
 MUSIC_PATH = os.path.join(FILE_PATH, "Music")
