@@ -46,10 +46,10 @@ if __name__ == "__main__":
                 case _:
                     send_fifo_msg("play_playlist:" + sys.argv[2])
 
-        case "skip" | "-s":
+        case "skip" | "next":
             send_fifo_msg("skip")
 
-        case "pause" | "-p":
+        case "pause":
             send_fifo_msg("pause")
         
         case "repeat":
