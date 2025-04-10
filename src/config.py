@@ -33,7 +33,7 @@ PLAYLIST_DIRECTORY = os.path.join(FILE_PATH, "Playlists")
 def get_fifo_path(fifo_name: str) -> str:
     return os.path.join(FILE_PATH, "Ipc", fifo_name)
 
-
+METADATA_PATH = os.path.join(FILE_PATH, "metadata.json")
 
 
 
