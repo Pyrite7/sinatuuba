@@ -51,6 +51,9 @@ if __name__ == "__main__":
 
         case "pause" | "-p":
             send_fifo_msg("pause")
+        
+        case "repeat":
+            send_fifo_msg("repeat")
 
         case "add":
             match len(sys.argv[2:]):

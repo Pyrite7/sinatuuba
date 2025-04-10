@@ -50,6 +50,9 @@ with open(config.get_fifo_path("cli2main"), "r") as fifo:
                 if player != None:
                     player.pause()
             
+            case "repeat":
+                play(current_playlist[current_playlist_index])
+            
             case "return_current":
                 ipc.send_fifo_msg(current_video_id, "main2cli")
 
