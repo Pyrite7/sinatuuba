@@ -4,6 +4,7 @@ import sys
 import playlists
 import random
 import vlc
+import ipc
 
 
 
@@ -48,12 +49,9 @@ with open(config.get_fifo_path("cli2main"), "r") as fifo:
             case "pause":
                 if player != None:
                     player.pause()
-
-            case "add_current":
-                playlists.add_to_favourite_playlist(current_video_id)
-
-            case "remove_current":
-                playlists.remove_from_favourite_playlist(current_video_id)
+            
+            case "return_current":
+                ipc.send_fifo_msg(current_video_id, "main2cli")
 
             case "quit":
                 sys.exit()
