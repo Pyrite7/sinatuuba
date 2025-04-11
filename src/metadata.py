@@ -22,7 +22,11 @@ def overwrite_all_video_metadata(metadata: dict):
 
 
 def load_video_metadata(video_id: str) -> dict:
-    return load_all_video_metadata()[video_id]
+    all_metadata = load_all_video_metadata()
+    if video_id in all_metadata.keys():
+        return load_all_video_metadata()[video_id]
+    else:
+        return {}
 
 
 def write_video_metadata(video_id: str, metadata: str):

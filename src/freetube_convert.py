@@ -12,6 +12,7 @@ def convert_from_freetube(new_playlist_name: str, freetube_playlist_name: str, f
         video_ids = list(map(lambda video: video["videoId"], ftube_playlist["videos"]))
 
         playlists.unsafe_write_playlist(video_ids, new_playlist_name)
+        get_metadata_from_freetube(freetube_playlist_name, freetube_file_path)
 
 
 
