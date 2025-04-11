@@ -3,6 +3,9 @@ import sys
 import playlists
 import metadata
 import config
+import query
+import random
+
 
 
 def send_fifo_msg(msg: str):
@@ -27,6 +30,24 @@ def format_song_display_name(video_id: str) -> str:
         return channel_name + " - " + title + " [" + video_id + "]"
 
 
+def process_query(q: str) -> list[str]:
+    components = q.split(",")
+    results = query.get_query(q)
+    
+    if len(results) == 1:
+        return [results[0]]
+    
+    if "auto" in components:
+        return [random.choice(results)]
+    
+    if "all" in components:
+        return results
+    
+    for i, result in enumerate(results):
+        print("[ " + str(i) + " ] ~ " + format_song_display_name(result))
+    
+    sel = input("Type a number to select a song: ")
+    return [results[int(sel)]]
 
 
 if __name__ == "__main__":
@@ -40,11 +61,12 @@ if __name__ == "__main__":
             ipc.run_independent("sinatuuba")
         
         case "play":
-            match sys.argv[2]:
-                case "-id":
-                    send_fifo_msg("play_song:" + sys.argv[3])
-                case _:
-                    send_fifo_msg("play_playlist:" + sys.argv[2])
+            if sys.argv[2] in playlists.get_all_playlists():
+                send_fifo_msg("play_playlist:" + sys.argv[2])
+            else:
+                results = process_query(sys.argv[2])
+                if len(results) == 1:
+                    send_fifo_msg("play_song:" + results[0])
 
         case "skip" | "next":
             send_fifo_msg("skip")
@@ -81,6 +103,12 @@ if __name__ == "__main__":
         
         case "info":
             print(format_song_display_name(get_current_video_id()))
+        
+        case "search":
+            query_results = query.get_query(sys.argv[2])
+            print("Your query matched " + str(len(query_results)) + " songs:")
+            for result in query_results:
+                print(format_song_display_name(result))
 
         case "quit":
             send_fifo_msg("quit")
