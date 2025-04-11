@@ -78,22 +78,27 @@ if __name__ == "__main__":
             send_fifo_msg("repeat")
 
         case "add":
-            match len(sys.argv[2:]):
-                case 2:
-                    playlists.add_to_playlist(sys.argv[2], sys.argv[3])
-                case 1:
-                    playlists.add_to_favourite_playlist(sys.argv[2])
-                case 0:
-                    playlists.add_to_favourite_playlist(get_current_video_id())
+            if len(sys.argv) == 0:
+                playlists.add_to_favourite_playlist(get_current_video_id())
+            else:
+                songs = process_query(sys.argv[2])
+                for song in songs:
+                    if len(sys.argv) == 1:
+                        playlists.add_to_favourite_playlist(song)
+                    else:
+                        playlists.add_to_playlist(song, sys.argv[3])
+
 
         case "remove":
-            match len(sys.argv[2:]):
-                case 2:
-                    playlists.remove_from_playlist(sys.argv[2], sys.argv[3])
-                case 1:
-                    playlists.remove_from_favourite_playlist(sys.argv[2])
-                case 0:
-                    playlists.remove_from_favourite_playlist(get_current_video_id())
+            if len(sys.argv) == 0:
+                playlists.remove_from_favourite_playlist(get_current_video_id())
+            else:
+                songs = process_query(sys.argv[2])
+                for song in songs:
+                    if len(sys.argv) == 1:
+                        playlists.remove_from_favourite_playlist(song)
+                    else:
+                        playlists.remove_from_playlist(song, sys.argv[3])
 
         case "new":
             playlists.create_playlist(sys.argv[2])
@@ -102,7 +107,13 @@ if __name__ == "__main__":
             playlists.set_favourite_playlist(sys.argv[2])
         
         case "info":
-            print(format_song_display_name(get_current_video_id()))
+            if len(sys.argv) > 0 and sys.argv[2] in playlists.get_all_playlists():
+                print("The playlist " + sys.argv[2] + " contains the following songs:\n")
+                for video_id in playlists.load_playlist(sys.argv[2]):
+                    print(format_song_display_name(video_id))
+            else:
+                print(format_song_display_name(get_current_video_id()))
+                
         
         case "search":
             query_results = query.get_query(sys.argv[2])
