@@ -107,10 +107,11 @@ if __name__ == "__main__":
             playlists.set_favourite_playlist(sys.argv[2])
         
         case "info":
-            if len(sys.argv) > 0 and sys.argv[2] in playlists.get_all_playlists():
-                print("The playlist " + sys.argv[2] + " contains the following songs:\n")
-                for video_id in playlists.load_playlist(sys.argv[2]):
-                    print(format_song_display_name(video_id))
+            if len(sys.argv) > 3:
+                if sys.argv[2] in playlists.get_all_playlists():
+                    print("The playlist " + sys.argv[2] + " contains the following songs:\n")
+                    for video_id in playlists.load_playlist(sys.argv[2]):
+                        print(format_song_display_name(video_id))
             else:
                 print(format_song_display_name(get_current_video_id()))
                 
